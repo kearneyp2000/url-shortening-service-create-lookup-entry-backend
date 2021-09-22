@@ -9,6 +9,7 @@ module.exports.queryTable = function(params) {
   return new Promise((resolve, reject) => {
     return docClient.query(params, function(err, data) {
       if (err) {
+        console.log("params : " + JSON.stringify(params, null, 2));
         //console.error("Unable to query. Error:", JSON.stringify(err, null, 2));
         reject("Unable to query. Error:", JSON.stringify(err, null, 2));
       } else {

@@ -47,12 +47,12 @@ app.post("/urlshorten", (req, res) => {
 
             var params = {
               TableName: dbTable,
-              KeyConditionExpression: "#l_url = :longurl",
+              KeyConditionExpression: "#r_source = :resource",
               ExpressionAttributeNames: {
-                "#l_url": "longurl",
+                "#r_source": "resource",
               },
               ExpressionAttributeValues: {
-                ":longurl": urlToShorten
+                ":resource": urlToShorten
               }
             };
           
@@ -66,20 +66,40 @@ app.post("/urlshorten", (req, res) => {
                 } else {
                     //if an entry does not exist add the record
                     const shortUrl = baseUrl + '/' + urlCode  
-                    let row2 = {
-                        "longurl": urlToShorten,
+                    let row1 = {
+                        "resource": urlToShorten,
                         "client": client,
                         "shorturl": shortUrl
                     }
-                    var params = {
+                    var params1 = {
                       TableName: dbTable,
-                      Item: row2,
+                      Item: row1,
                     };
-                    insertTable.putItem(params)
+                    insertTable.putItem(params1)
                     .then(response => {
-                      res.json(params.Item);
+        
+                        // create an additional row to allow reverse lookup
+                        let row2 = {
+                          "resource": urlCode,
+                          "client": client,
+                          "shorturl": shortUrl,
+                          "longurl": urlToShorten
+                        }
+                        var params2 = {
+                          TableName: dbTable,
+                          Item: row2,
+                        };
+                        insertTable.putItem(params2)
+                        .then(response => {
+                          console.log("response2 : " + JSON.stringify(response, null, 2));
+                          res.json(params1.Item);
+                        })
+                        .catch(err => {console.log(err);})
+
+
                     })
                     .catch(err => {console.log(err);})
+
                 }
               })
               .catch(err => {
