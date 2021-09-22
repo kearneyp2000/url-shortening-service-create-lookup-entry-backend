@@ -1,0 +1,6 @@
+POST http://localhost:4000/urlshorten
+Content-Type: application/json
+
+{
+  "urlToShorten": "https://www.msn.com/en-ie/sports/other/padraig-harrington-admits-confusion-over-ryder-cup-covid-protocol/vi-AAOGMLM?ocid=msedgntp"
+}

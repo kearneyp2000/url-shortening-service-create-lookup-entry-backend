@@ -1,0 +1,9 @@
+.env
+.env.test
+.zip
+
+/build
+/node_modules
+/git
+/keeplocal
+/.git
